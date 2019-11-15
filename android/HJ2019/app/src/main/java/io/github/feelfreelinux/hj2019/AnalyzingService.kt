@@ -7,8 +7,17 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.widget.Toast
 import android.R
 import android.os.Build
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+
+
+
+
 
 
 class TypeViewTextChangedEventObject(
@@ -71,7 +80,9 @@ class AnaylyzingService : AccessibilityService() {
 
         if (packageName != null && packageName != getPackageName()) {
             Log.v(TAG, "GOT DATA, EVENT OBJECT")
-            Log.v(TAG, accessibilityEvent.text.toString())
+            Log.v(TAG, accessibilityEvent.text.first().toString())
+
+
         }
     }
 
@@ -129,6 +140,8 @@ class AnaylyzingService : AccessibilityService() {
             accessibilityServiceInfo.eventTypes = (AccessibilityEvent.TYPE_VIEW_SELECTED
                     or AccessibilityEvent.TYPE_VIEW_FOCUSED
                     or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
+                    or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                    or AccessibilityEvent.TYPE_WINDOWS_CHANGED
                     or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
 
             /*accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;*/
@@ -173,6 +186,17 @@ class AnaylyzingService : AccessibilityService() {
                 onTypeViewFocused(accessibilityEvent)
             }
 
+
+
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED  -> {
+                Log.v(TAG, "OKNO ZMIENIONE")
+                // Log.v(TAG, accessibilityEvent.source.viewIdResourceName.toString())
+                Log.v(TAG, rootInActiveWindow?.childCount?.toString() ?: "")
+                searchForTextViews(rootInActiveWindow)
+
+
+            }
+
             AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED -> {
                 Log.i(TAG, "Accessibility event (event type): Type view text selection changed")
 
@@ -194,6 +218,33 @@ class AnaylyzingService : AccessibilityService() {
         }
     }
 
+    fun getAllTextViews(rootNode: AccessibilityNodeInfo?): List<AccessibilityNodeInfo> {
+        if (rootNode == null || rootNode.className == null) {
+            return listOf()
+        }
+        return if (rootNode.childCount == 0) {
+            listOf(rootNode)
+        } else {
+            val parsedTextViews = mutableListOf<AccessibilityNodeInfo>()
+            for (i in 0 until rootNode!!.childCount - 1) {
+
+                parsedTextViews.addAll( getAllTextViews(rootNode!!.getChild(i)))
+            }
+
+            parsedTextViews
+        }
+    }
+    fun searchForTextViews(rootInActiveWindow2: AccessibilityNodeInfo?) {
+//         Log.i(TAG, "searchPacket node: ${rootInActiveWindow2} childCount: ${rootInActiveWindow2?.childCount}   idName: ${rootInActiveWindow2?.getViewIdResourceName() ?: ""}")
+        if (rootInActiveWindow2?.className?.contains("TextView") ?: false) {
+            Log.v("OI", "Found textview ! " + " id lol" + rootInActiveWindow2?.viewIdResourceName ?: "" )
+            Log.v("OI", "CONTAINS TEXT ? " + rootInActiveWindow2?.text ?: "oi")
+        } else {
+            for (i in 0 until (rootInActiveWindow2?.childCount ?: -1)) {
+                searchForTextViews(rootInActiveWindow2?.getChild(i))
+            }
+        }
+    }
     override fun onInterrupt() {
         Log.i(TAG, "Interrupt")
     }
