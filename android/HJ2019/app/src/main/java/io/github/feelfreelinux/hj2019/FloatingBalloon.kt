@@ -8,6 +8,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.*
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.util.DisplayMetrics
@@ -22,6 +23,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.isVisible
 import com.airbnb.lottie.LottieAnimationView
 import jp.co.recruit_lifestyle.android.floatingview.FloatingViewListener
 import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager
@@ -50,61 +52,72 @@ class ScenarioData(
     val buttonData: ButtonData? = null
 )
 
-var SCENARIO_DATAS = listOf(
-    ScenarioData(
-        "fileDownload",
-        listOf("\uD83D\uDE1F It's not safe to download files from the Internet."),
-        false
-    ),
-    ScenarioData(
-        "http",
-        listOf(
-            "\uD83D\uDCA1 This website is not safe. Avoid it!",
-            "\uD83E\uDD28 This is an HTTP website. Try to avoid it. \uD83D\uDE4FHTTP is not as secure as HTTPS."
-        ),
-        false
-    ),
-    ScenarioData(
-        "mp3Download",
-        listOf(
-            "\uD83C\uDFB5 Use Apple Music or Spotify to listen to music \uD83D\uDE42. ",
-            "\uD83D\uDE1F It is dangerous to download music from websites. Use the app."
-        ),
-        false,
-        buttonData = ButtonData("Open Spotify") {
-
-        }
-    ),
-    ScenarioData(
-        "videoDownload",
-        listOf("\uD83C\uDFAC Use Youtube to watch videos. It is not safe here \uD83D\uDE44."),
-        false,
-        buttonData = ButtonData("Open YouTube") {
-
-        }
-    ),
-    ScenarioData(
-        "appDownload",
-        listOf("Use Google Play to download apps. It is not safe here \uD83D\uDE44."),
-        false,
-        buttonData = ButtonData("Open Google Play") {
-
-        }
-    ),
-    ScenarioData(
-        "possibleThief",
-        listOf(
-            "\uD83D\uDE31 This person may be a thief. Talk to your parents \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66!",
-            "\uD83C\uDD98 This person can be a fraud. Contact your parents, please \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66! "
-        ),
-        true,
-        buttonData = ButtonData("Call mom") {
-
-        })
-
-)
-
 class FloatingBalloon : Service(), FloatingViewListener {
+
+    var SCENARIO_DATAS = listOf(
+        ScenarioData(
+            "fileDownload",
+            listOf("\uD83D\uDE1F It's not safe to download files from the Internet."),
+            false
+        ),
+        ScenarioData(
+            "http",
+            listOf(
+                "\uD83D\uDCA1 This website is not safe. Avoid it!",
+                "\uD83E\uDD28 This is an HTTP website. Try to avoid it. \uD83D\uDE4FHTTP is not as secure as HTTPS."
+            ),
+            false
+        ),
+        ScenarioData(
+            "mp3Download",
+            listOf(
+                "\uD83C\uDFB5 Use Apple Music or Spotify to listen to music \uD83D\uDE42. ",
+                "\uD83D\uDE1F It is dangerous to download music from websites. Use the app."
+            ),
+            false,
+            buttonData = ButtonData("Open Spotify") {
+                val launchIntent = it.packageManager.getLaunchIntentForPackage("com.spotify.music")
+                it.startActivity(launchIntent)
+                stopSelf()
+            }
+        ),
+        ScenarioData(
+            "videoDownload",
+            listOf("\uD83C\uDFAC Use Youtube to watch videos. It is not safe here \uD83D\uDE44."),
+            false,
+            buttonData = ButtonData("Open YouTube") {
+                val launchIntent = it.packageManager.getLaunchIntentForPackage("com.google.android.youtube")
+                it.startActivity(launchIntent)
+                stopSelf()
+            }
+        ),
+        ScenarioData(
+            "appDownload",
+            listOf("Use Google Play to download apps. It is not safe here \uD83D\uDE44."),
+            false,
+            buttonData = ButtonData("Open Google Play") {
+                val launchIntent = it.packageManager.getLaunchIntentForPackage("com.android.vending")
+                it.startActivity(launchIntent)
+                stopSelf()
+            }
+        ),
+        ScenarioData(
+            "possibleThief",
+            listOf(
+                "\uD83D\uDE31 This person may be a thief. Talk to your parents \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66!",
+                "\uD83C\uDD98 This person can be a fraud. Contact your parents, please \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66! "
+            ),
+            true,
+            buttonData = ButtonData("Call mom") {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.data = (Uri.parse("tel:" + "123456789"))
+
+                it.startActivity(intent)
+                stopSelf()
+            })
+
+    )
 
     private val TAG = "ChatHeadService"
 
@@ -139,13 +152,23 @@ class FloatingBalloon : Service(), FloatingViewListener {
         windowManager.defaultDisplay.getMetrics(metrics)
         val inflater = LayoutInflater.from(this)
         val iconView = inflater.inflate(R.layout.widget_balloon, null, false)
-        var scenario = SCENARIO_DATAS.first { it.scenarioId == intent.getStringExtra("SCENARIO_ID")
+
+        var scenario = SCENARIO_DATAS.first {
+            it.scenarioId == intent.getStringExtra("SCENARIO_ID")
         }
+
+        iconView.setOnClickListener {
+            scenario.buttonData?.callback?.invoke(applicationContext)
+        }
+
+        iconView.balloon_button.isVisible = scenario.buttonData != null
+        iconView.balloon_button.text = scenario.buttonData?.title ?: ""
 
         if (!scenariosMap.containsKey(scenario.scenarioId)) {
             scenariosMap[scenario.scenarioId] = 0
         }
-        iconView.bubble_text.text = scenario.hint[if (scenariosMap[scenario.scenarioId]!! % 2 == 0) 0 else 1]
+        iconView.bubble_text.text =
+            scenario.hint[if (scenariosMap[scenario.scenarioId]!! % 2 == 0) 0 else 1]
 
 
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)

@@ -18,7 +18,7 @@ val SCENARIOS = listOf(
     Scenario(listOf(
         listOf("free", "mp3"),
         listOf("download", "mp3")
-    ), "musicDownload", "com.android.chrome"),
+    ), "mp3Download", "com.android.chrome"),
     Scenario(listOf(
         listOf("watch", "video"),
         listOf("download", "movie"),
@@ -28,7 +28,7 @@ val SCENARIOS = listOf(
         listOf("download", "apk"),
         listOf("free", "apk"),
         listOf("download", "app")
-    ), "videoDownload", "com.android.chrome")
+    ), "appDownload", "com.android.chrome")
 )
 
 val SCENARIOS_OUTPUT_ANALYZED = listOf(
