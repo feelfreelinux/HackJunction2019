@@ -81,9 +81,15 @@ class AnaylyzingService : AccessibilityService() {
 
         if (packageName != null && packageName != getPackageName()) {
             Log.v(TAG, "GOT DATA, EVENT OBJECT")
-            Log.v(TAG, accessibilityEvent.text.first().toString())
-            SuspiciousEventsDetector.eventTyped(accessibilityEvent.text.first().toString(), applicationContext, accessibilityEvent.packageName.toString())
+            if (accessibilityEvent.text.isNotEmpty()) {
+                Log.v(TAG, accessibilityEvent.text.first().toString())
+                SuspiciousEventsDetector.eventTyped(
+                    accessibilityEvent.text.first().toString(),
+                    applicationContext,
+                    accessibilityEvent.packageName.toString()
+                )
 
+            }
 
         }
     }

@@ -137,6 +137,21 @@ class SuspiciousEventsDetector {
         }
 
         private fun checkKeywords(scenario: Scenario, data: String): Boolean {
+            val words = data.toLowerCase().split(' ').toList()
+            // free, ''
+
+            return scenario.keywordsList.any { // free, download
+                kw ->
+                Log.v("TAG", kw.joinToString(", "))
+                kw.all {// free
+                    Log.v("TAG", ".all - im in " + it)
+                    words.testIfSuits(it)
+                }
+            }
+        }
+
+/*
+        private fun checkKeywords(scenario: Scenario, data: String): Boolean {
             val splittedWords = data.split(" ").map { word -> word.toLowerCase() } // i live
             Log.v("TAG", splittedWords.joinToString(separator = ","))
             scenario.keywordsList.forEach { keywords ->
@@ -148,9 +163,9 @@ class SuspiciousEventsDetector {
 
             }
             return false
-        }
+        }*/
 
-        fun List<String>.containsAllJaro(list: List<String>): Boolean {
+        /*fun List<String>.containsAllJaro(list: List<String>): Boolean {
             list.forEach {
                 if (!testIfSuits(it)) {
                     return false
@@ -158,12 +173,12 @@ class SuspiciousEventsDetector {
             }
 
             return true
-        }
+        }*/
 
         fun List<String>.testIfSuits(other: String): Boolean {
             forEach {
 
-                if (JaroDistance.calculate(it.toLowerCase(), other.toLowerCase()) > 0.9) {
+                if (JaroDistance.calculate (it.toLowerCase(),  other.toLowerCase()) > 0.9 ){
                     return true
                 }
             }
