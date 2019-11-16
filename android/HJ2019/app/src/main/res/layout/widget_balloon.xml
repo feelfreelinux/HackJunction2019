@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:id="@+id/bubble_layout"
+        android:layout_width="270dp"
+        android:layout_height="120dp"
+        android:layout_gravity="right"
+        android:layout_marginTop="12dp"
+        android:layout_marginRight="120dp">
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="120dp"
+            android:src="@drawable/bubble" />
+
+        <TextView
+            android:id="@+id/bubble_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+            android:paddingLeft="24dp"
+            android:paddingRight="40dp"
+            android:paddingBottom="4dp"
+            android:text="Sometimes you brick, sometimes you airball, but if you don't shoot you ain't never gonna score!"
+            android:textColor="@android:color/white" />
+
+    </FrameLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="right"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/balloonv1" />
+
+
+</FrameLayout>
