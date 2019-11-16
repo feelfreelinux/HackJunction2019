@@ -52,7 +52,7 @@ class FloatingBalloon : Service(), FloatingViewListener {
     lateinit var floatingButton: View
 
     private val WIDTH_DP = 390
-    private val HEIGHT_DP = 420
+    private val HEIGHT_DP = 390
 
     private var mFloatingViewManager: FloatingViewManager? = null
     var connectionBroadcastReceiver = object : DisableHeadReceiver() {
@@ -72,7 +72,13 @@ class FloatingBalloon : Service(), FloatingViewListener {
         windowManager.defaultDisplay.getMetrics(metrics)
         val inflater = LayoutInflater.from(this)
         val iconView = inflater.inflate(R.layout.widget_balloon, null, false)
-        iconView.bubble_text.text = intent.getStringExtra("HINT")
+        iconView.bubble_text.text = intent.getStringExtra("HINT").trim()
+        if (intent.getBooleanExtra("ANGRY_MODE", false)) {
+            iconView.animation_view.setAnimation(R.raw.balloon2v1)
+        } else {
+            iconView.animation_view.setAnimation(R.raw.balloon1v1)
+        }
+
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)
         val animationView = iconView.findViewById<LottieAnimationView>(R.id.animation_view)
 

@@ -36,6 +36,7 @@ class TypeViewTextSelectionChangedEventObject(
 
 class AnaylyzingService : AccessibilityService() {
     private val TAG = AccessibilityService::class.java.simpleName
+    private var lastEvent: String = ""
     private var mTypeViewTextChangedEventObject: TypeViewTextChangedEventObject? = null
     private var mTypeViewTextSelectionChangedEventObject: TypeViewTextSelectionChangedEventObject? =
         null
@@ -237,8 +238,12 @@ class AnaylyzingService : AccessibilityService() {
     }
     fun searchForTextViews(rootInActiveWindow2: AccessibilityNodeInfo?) {
 //         Log.i(TAG, "searchPacket node: ${rootInActiveWindow2} childCount: ${rootInActiveWindow2?.childCount}   idName: ${rootInActiveWindow2?.getViewIdResourceName() ?: ""}")
-        if (rootInActiveWindow2?.className?.contains("TextView") ?: false) {
-            SuspiciousEventsDetector.textViewFound(rootInActiveWindow2?.viewIdResourceName ?: "", rootInActiveWindow2?.text.toString() ?: "", applicationContext)
+        if (rootInActiveWindow2?.className?.contains("TextView") ?: false || rootInActiveWindow2?.className?.contains("EditText") ?: false || rootInActiveWindow2?.className?.contains("Button") ?: false) {
+            if (lastEvent != rootInActiveWindow2?.text.toString()) {
+                lastEvent = rootInActiveWindow2?.text.toString()
+                SuspiciousEventsDetector.textViewFound(rootInActiveWindow2?.viewIdResourceName ?: "", rootInActiveWindow2?.text.toString() ?: "", applicationContext)
+
+            }
             Log.v("OI", "Found textview ! " + " id lol" + rootInActiveWindow2?.viewIdResourceName ?: "" )
             Log.v("OI", "CONTAINS TEXT ? " + rootInActiveWindow2?.text ?: "oi")
         } else {
