@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -46,6 +47,9 @@ class FloatingBalloon : Service(), FloatingViewListener {
     lateinit var iconText: TextView
     lateinit var floatingButton: View
 
+    private val WIDTH_DP = 390
+    private val HEIGHT_DP = 420
+
     private var mFloatingViewManager: FloatingViewManager? = null
     var connectionBroadcastReceiver = object : DisableHeadReceiver() {
         override fun broadcastResult(connected: Boolean) {
@@ -70,13 +74,24 @@ class FloatingBalloon : Service(), FloatingViewListener {
 
         val widgetFrameLayout = iconView.widget_frame
         widgetFrameLayout.doOnLayout {view ->
-            val xValue = view.x
-            view.x = 390 * metrics.density
-            val animator = ofFloat(390 * metrics.density, xValue)
-            animator.duration = 700
-            animator.interpolator = AccelerateDecelerateInterpolator()
+            val yValue = view.y
+            view.alpha = 0f
+            view.y = -36 * metrics.density
+
+            val alphaAnimator = ofFloat(0f, 1f)
+            alphaAnimator.duration = 400
+            alphaAnimator.interpolator = DecelerateInterpolator()
+            alphaAnimator.addUpdateListener {
+                view.alpha = it.animatedValue as Float
+            }
+            alphaAnimator.startDelay = 400
+            alphaAnimator.start()
+
+            val animator = ofFloat(-36 * metrics.density, yValue)
+            animator.duration = 400
+            animator.interpolator = DecelerateInterpolator()
             animator.addUpdateListener {
-                view.x = animator.animatedValue as Float
+                view.y = animator.animatedValue as Float
             }
             animator.startDelay = 400
             animator.start()
@@ -109,8 +124,8 @@ class FloatingBalloon : Service(), FloatingViewListener {
         mFloatingViewManager = FloatingViewManager(this, this)
 
         val options = FloatingViewManager.Options()
-        options.floatingViewWidth = (390 * metrics.density).toInt()
-        options.floatingViewHeight = (150 * metrics.density).toInt()
+        options.floatingViewWidth = (WIDTH_DP * metrics.density).toInt()
+        options.floatingViewHeight = (HEIGHT_DP * metrics.density).toInt()
         options.moveDirection = MOVE_DIRECTION_RIGHT
         options.overMargin = (16 * metrics.density).toInt()
         mFloatingViewManager!!.addViewToWindow(iconView, options)
