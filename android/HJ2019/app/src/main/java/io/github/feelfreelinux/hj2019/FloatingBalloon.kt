@@ -52,7 +52,7 @@ class FloatingBalloon : Service(), FloatingViewListener {
     lateinit var floatingButton: View
 
     private val WIDTH_DP = 390
-    private val HEIGHT_DP = 420
+    private val HEIGHT_DP = 390
 
     private var mFloatingViewManager: FloatingViewManager? = null
     var connectionBroadcastReceiver = object : DisableHeadReceiver() {

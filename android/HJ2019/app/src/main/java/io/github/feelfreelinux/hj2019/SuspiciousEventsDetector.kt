@@ -16,14 +16,14 @@ val SCENARIOS = listOf(
             listOf("home"),
             listOf("My", "street"),
             listOf("live", "I")
-        ), "Remeber! Never share your personal informations in internet"),
+        ), "Never share your personal information on the Internet \uD83D\uDE31 \uD83D\uDE31 \uD83D\uDE31"),
     Scenario(
         listOf(
             listOf("Union", "Western", "transfer"),
             listOf("transfer", "money"),
             listOf("transfer", "cash"),
             listOf("paypal", "money")
-        ), "STOP! Ask your parents if this payment is safe!"
+        ), "\uD83D\uDED1 Stop! Ask your parents if this payment is safe!"
     )
 )
 
@@ -36,13 +36,13 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
             listOf("Your", "street"),
             listOf("live", "You"),
             listOf("Your", "age")
-        ), "Remeber! Never share your personal informations in internet"),
+        ), "It's not safe to share your personal information on the Internet \uD83D\uDE15"),
 
     Scenario(
         listOf(
             listOf("You", "moron"),
             listOf("hate", "you")
-        ), "This person seems aggressive, it's good idea to block them and talk with your parents."
+        ), "This person seems to be aggressive \uD83D\uDC7A, it's a good idea to block them and talk with your parents."
     ),
 
     Scenario(
@@ -51,19 +51,19 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
             listOf("login", "account"),
             listOf("login", "password"),
             listOf("password", "account")
-        ), "Someone might want to steal from you. Talk to your parents!"
+        ), "This person may be a fraud \uD83E\uDD14. Discuss it with your parents!"
     ),
     Scenario(
         listOf(
             listOf("sms", "confirm")
-        ), "This is a scam, if you’ll give your phone number, you can lose your money!"
+        ), "This may be a scam \uD83D\uDE21! If you give your phone number, you can lose your money."
     ),
     Scenario(
         listOf(
             listOf("Union", "Western", "transfer"),
             listOf("transfer", "money"),
                     listOf("transfer", "cash")
-    ), "STOP! Ask your parents if this payment is safe!"
+    ), "STOP \uD83D\uDED1! Ask your parents if this payment is safe!"
     )
 )
 

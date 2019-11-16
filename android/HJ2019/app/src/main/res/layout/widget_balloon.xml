@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="270dp">
+    android:paddingTop="240dp">
 
     <FrameLayout
         android:id="@+id/bubble_layout"
@@ -19,22 +19,27 @@
         <ImageView
             android:layout_width="270dp"
             android:layout_height="120dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
             android:src="@drawable/bubblev2" />
 
         <TextView
+            fontPath="fonts/EricssonHilda-Medium.ttf"
             android:id="@+id/bubble_text"
-            android:layout_width="240dp"
-            android:layout_height="66dp"
-            android:layout_gravity="center"
-            android:autoSizeMaxTextSize="98sp"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:autoSizeMaxTextSize="24sp"
             android:autoSizeTextType="uniform"
-            android:paddingLeft="24dp"
-            android:paddingRight="40dp"
-            android:paddingBottom="4dp"
-            android:text="Sometimes you brick, sometimes you airball, but if you don't shoot you ain't never gonna score!"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:textAlignment="gravity"
+            android:paddingLeft="26dp"
+            android:paddingRight="36dp"
+            android:text="Test the rigjfkasfdkfjklsdjf skldjfls;df lsdjf ;lksdj f;lkfj sl;kjf ;lsd"
             android:textColor="@android:color/white"
-            android:textSize="13sp"
             tools:ignore="MissingPrefix" />
+
 
     </FrameLayout>
 
@@ -44,7 +49,7 @@
         android:layout_height="150dp"
         android:layout_gravity="right"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/balloonv1" />
+        app:lottie_rawRes="@raw/balloon2v1" />
 
 
 </FrameLayout>
