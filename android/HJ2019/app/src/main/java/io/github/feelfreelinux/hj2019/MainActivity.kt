@@ -14,6 +14,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +22,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        CalligraphyConfig.initDefault(
+            CalligraphyConfig.Builder()
+                .setDefaultFontPath("fonts/EricssonHilda-Regular.ttf")
+                .setFontAttrId(R.attr.fontPath)
+                .build()
+        )
+
         accessibilityPermButton.setOnClickListener {
             startActivity( Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS));
         }

@@ -28,15 +28,19 @@ import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager
 import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager.MOVE_DIRECTION_RIGHT
 import kotlinx.android.synthetic.main.widget_balloon.*
 import kotlinx.android.synthetic.main.widget_balloon.view.*
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper
+
 abstract class DisableHeadReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "KILL_IT")
-        broadcastResult(true)
+            broadcastResult(true)
     }
 
     protected abstract fun broadcastResult(connected: Boolean)
 }
+
 class FloatingBalloon : Service(), FloatingViewListener {
 
     private val TAG = "ChatHeadService"
@@ -73,7 +77,7 @@ class FloatingBalloon : Service(), FloatingViewListener {
         val animationView = iconView.findViewById<LottieAnimationView>(R.id.animation_view)
 
         val widgetFrameLayout = iconView.widget_frame
-        widgetFrameLayout.doOnLayout {view ->
+        widgetFrameLayout.doOnLayout { view ->
             val yValue = view.y
             view.alpha = 0f
             view.y = -36 * metrics.density
@@ -144,6 +148,9 @@ class FloatingBalloon : Service(), FloatingViewListener {
         this.registerReceiver(connectionBroadcastReceiver, intentFilter)
     }
 
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(base))
+    }
 
 
     override fun onDestroy() {

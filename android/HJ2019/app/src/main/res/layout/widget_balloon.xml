@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/widget_frame"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
             android:src="@drawable/bubblev2" />
 
         <TextView
+            fontPath="fonts/EricssonHilda-Regular.ttf"
             android:id="@+id/bubble_text"
             android:layout_width="240dp"
             android:layout_height="66dp"
@@ -32,7 +34,8 @@
             android:paddingBottom="4dp"
             android:text="Sometimes you brick, sometimes you airball, but if you don't shoot you ain't never gonna score!"
             android:textColor="@android:color/white"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            tools:ignore="MissingPrefix" />
 
     </FrameLayout>
 
