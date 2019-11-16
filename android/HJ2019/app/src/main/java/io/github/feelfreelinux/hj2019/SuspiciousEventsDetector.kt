@@ -40,7 +40,7 @@ class SuspiciousEventsDetector {
                     scenario ->
                     scenario.keywords.forEach {
                         keyword ->
-                        if (JaroDistance.calculate(keyword, splittedWord) > 0.9) {
+                        if (JaroDistance.calculate(keyword.toLowerCase(), splittedWord.toLowerCase()) > 0.9) {
                             val intent = Intent(context, FloatingBalloon::class.java)
 
                             intent.putExtra("HINT", scenario.hint)
@@ -60,7 +60,7 @@ class SuspiciousEventsDetector {
                             scenario ->
                         scenario.keywords.forEach {
                                 keyword ->
-                            if (JaroDistance.calculate(keyword, splittedWord) > 0.9) {
+                            if (JaroDistance.calculate(keyword.toLowerCase(), splittedWord.toLowerCase()) > 0.9) {
                                 val intent = Intent(context, FloatingBalloon::class.java)
 
                                 intent.putExtra("HINT", scenario.hint)
