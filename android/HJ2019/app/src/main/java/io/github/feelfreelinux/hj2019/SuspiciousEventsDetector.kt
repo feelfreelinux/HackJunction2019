@@ -2,6 +2,7 @@ package io.github.feelfreelinux.hj2019
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.ContextCompat
 
 data class Scenario(val keywordsList: List<List<String>>, val hint: String)
@@ -10,71 +11,70 @@ data class Scenario(val keywordsList: List<List<String>>, val hint: String)
 val SCENARIOS = listOf(
     Scenario(
         listOf(
-            listOf("school"),
-            listOf("address"),
+            listOf("My", "school"),
+            listOf("My", "address"),
             listOf("home"),
-            listOf("live")
-        ), "Don't show reveal personal information to strangers!"
+            listOf("My", "street"),
+            listOf("live", "I")
+        ), "Remeber! Never share your personal informations in internet"),
+    Scenario(
+        listOf(
+            listOf("Union", "Western", "transfer"),
+            listOf("transfer", "money"),
+            listOf("transfer", "cash"),
+            listOf("paypal", "money")
+        ), "STOP! Ask your parents if this payment is safe!"
     )
 )
 
 val SCENARIOS_OUTPUT_ANALYZED = listOf(
     Scenario(
         listOf(
-            listOf("school"),
-            listOf("address"),
-            listOf("home"),
-            listOf("live")
-        ), "Don't show reveal personal information to strangers!"
+            listOf("Your", "school"),
+            listOf("Your", "address"),
+            listOf("Your", "home"),
+            listOf("Your", "street"),
+            listOf("live", "You"),
+            listOf("Your", "age")
+        ), "Remeber! Never share your personal informations in internet"),
+
+    Scenario(
+        listOf(
+            listOf("You", "moron"),
+            listOf("hate", "you")
+        ), "This person seems aggressive, it's good idea to block them and talk with your parents."
+    ),
+
+    Scenario(
+        listOf(
+            listOf("Bank", "number"),
+            listOf("login", "account"),
+            listOf("login", "password"),
+            listOf("password", "account")
+        ), "Someone might want to steal from you. Talk to your parents!"
     ),
     Scenario(
         listOf(
-            listOf("how old are you"),
-            listOf("how many years do you have"),
-            listOf("when have you borned")
-        ), "Don't give your age to strangers!"
+            listOf("sms", "confirm")
+        ), "This is a scam, if you’ll give your phone number, you can lose your money!"
     ),
     Scenario(
         listOf(
-            listOf("Send"),
-            listOf("nudes")
-        ), "This doesn’t seems good, maybe leave this chat"
-    ),
-    Scenario(
-        listOf(
-            listOf("Are"),
-            listOf("your"),
-            listOf("parents"),
-            listOf("home")
-        ), "This is not a question that you are supposed to respond to"
-    ),
-    Scenario(
-        listOf(
-            listOf("Download this for free"),
-            listOf("candies"),
-            listOf("diamonds")
-        ), "Remember! Do not download anything from weird sites!"
-    ),
-    Scenario(
-        listOf(
-            listOf("Confirm that you are a human via sms")
-        ), "This is a scam, if you’ll give your phone number, you can lost your money!"
-    ),
-    Scenario(
-        listOf(
-            listOf("Union"),
-            listOf("transfer")
-        ), "Don't transfer money to strangers! If you want to buy something online - ask your parent"
+            listOf("Union", "Western", "transfer"),
+            listOf("transfer", "money"),
+                    listOf("transfer", "cash")
+    ), "STOP! Ask your parents if this payment is safe!"
     )
 )
 
 
 class SuspiciousEventsDetector {
     companion object {
-
+        var lastScenario: String? = null
         fun eventTyped(data: String, context: Context) {
             SCENARIOS.forEach { scenario ->
                 if (checkKeywords(scenario, data)) {
+
                     val intent = Intent(context, FloatingBalloon::class.java)
 
                     intent.putExtra("HINT", scenario.hint)
@@ -85,6 +85,33 @@ class SuspiciousEventsDetector {
         }
 
         fun textViewFound(id: String, data: String, context: Context) {
+            if (id == "com.android.vending:id/right_button" && data == "Install") {
+                var hint = "Ask your parent if this app is proper for you."
+                if (lastScenario != hint) {
+                    lastScenario = hint
+                    val intent = Intent(context, FloatingBalloon::class.java)
+
+                    intent.putExtra("HINT", hint)
+                    ContextCompat.startForegroundService(context, intent)
+                    return
+                }
+                return
+            }
+
+            if (id == "com.android.chrome:id/url_bar") {
+                if (data.startsWith("http:")) {
+                    var hint = "This site is not secure. Please, avoid it"
+                    if (lastScenario != hint) {
+                        lastScenario = hint
+                        val intent = Intent(context, FloatingBalloon::class.java)
+
+                        intent.putExtra("HINT", hint)
+                        ContextCompat.startForegroundService(context, intent)
+                        return
+                    }
+                }
+            }
+
             if (id == "com.instagram.android:id/direct_text_message_text_view" || id == "com.zhiliaoapp.musically:id/eyx") {
                 SCENARIOS_OUTPUT_ANALYZED.forEach { scenario ->
                     if (checkKeywords(scenario, data)) {
@@ -99,12 +126,38 @@ class SuspiciousEventsDetector {
         }
 
         private fun checkKeywords(scenario: Scenario, data: String): Boolean {
-            val splittedWords = data.split(" ").map { word -> word.toLowerCase() }
+            val splittedWords = data.split(" ").map { word -> word.toLowerCase() } // i live
+            Log.v("TAG", splittedWords.joinToString(separator = ",") )
             scenario.keywordsList.forEach { keywords ->
-                splittedWords.forEach { word ->
-                    if (keywords.map { kw -> JaroDistance.calculate(kw.toLowerCase(), word) }.all { d -> d > 0.9 }) {
-                        return true
+                // keywords = I, live
+                if (splittedWords.containsAll(keywords.map { it.toLowerCase() })) {
+                        Log.v("TAG", "Last scenario: " + lastScenario ?: "")
+                        if (!(lastScenario?.contains( scenario.hint) ?: false)){
+                            lastScenario = scenario.hint
+                            return true
+                        }
                     }
+
+
+            }
+            return false
+        }
+
+        fun List<String>.containsAllJaro(list: List<String> ): Boolean {
+            list.forEach {
+                if (!testIfSuits(it)) {
+                    return false
+                }
+            }
+
+            return true
+        }
+
+        fun List<String>.testIfSuits(other: String): Boolean {
+            forEach {
+
+                if (JaroDistance.calculate(it.toLowerCase(), other.toLowerCase()) > 0.9) {
+                    return true
                 }
             }
             return false
