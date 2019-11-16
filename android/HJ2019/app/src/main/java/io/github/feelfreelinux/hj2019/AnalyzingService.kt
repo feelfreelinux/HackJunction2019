@@ -18,8 +18,6 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 
-
-
 class TypeViewTextChangedEventObject(
     var text: String?,
     var lastText: String?,
@@ -149,7 +147,7 @@ class AnaylyzingService : AccessibilityService() {
                     or AccessibilityEvent.TYPE_VIEW_CLICKED
                     or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
 
-            /*accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;*/
+//            accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;
 
             accessibilityServiceInfo.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
 
@@ -195,10 +193,14 @@ class AnaylyzingService : AccessibilityService() {
                 Log.v(TAG, accessibilityEvent.className.toString())
             }
 
+<<<<<<< Updated upstream
             AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED/*, AccessibilityEvent.TYPE_WINDOWS_CHANGED */-> {
 
                 currentlyOpenedApp = accessibilityEvent.packageName.toString()
 
+=======
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+>>>>>>> Stashed changes
                 Log.v(TAG, "OKNO ZMIENIONE")
                 // Log.v(TAG, accessibilityEvent.source.viewIdResourceName.toString())
                 Log.v(TAG, rootInActiveWindow?.childCount?.toString() ?: "")

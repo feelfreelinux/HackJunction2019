@@ -24,22 +24,34 @@
             android:src="@drawable/bubblev2" />
 
         <TextView
-            fontPath="fonts/EricssonHilda-Medium.ttf"
             android:id="@+id/bubble_text"
+            fontPath="fonts/EricssonHilda-Medium.ttf"
             android:layout_width="match_parent"
             android:layout_height="62dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
             android:autoSizeMaxTextSize="24sp"
             android:autoSizeTextType="uniform"
-            android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginBottom="20dp"
-            android:textAlignment="gravity"
             android:paddingLeft="26dp"
             android:paddingRight="36dp"
             android:text="Test the rigjfkasfdkfjklsdjf skldjfls;df lsdjf ;lksdj f;lkfj sl;kjf ;lsd"
+            android:textAlignment="gravity"
             android:textColor="@android:color/white"
             tools:ignore="MissingPrefix" />
 
+        <Button
+            android:id="@+id/balloon_button"
+            fontPath="fonts/EricssonHilda-Medium.ttf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:backgroundTint="#DD4DA4"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Use Google Play"
+            android:textColor="@android:color/white"
+            tools:ignore="MissingPrefix" />
 
     </FrameLayout>
 
@@ -50,6 +62,5 @@
         android:layout_gravity="right"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/balloon2v1" />
-
 
 </FrameLayout>

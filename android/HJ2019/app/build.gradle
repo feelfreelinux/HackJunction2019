@@ -33,6 +33,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.2.0'
     implementation 'com.github.recruit-lifestyle:FloatingView:2.4.4'
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
+    implementation 'com.ornach.nobobutton:nobobutton:1.6'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
