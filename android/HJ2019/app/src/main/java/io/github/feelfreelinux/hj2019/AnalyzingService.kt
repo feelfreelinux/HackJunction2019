@@ -139,12 +139,13 @@ class AnaylyzingService : AccessibilityService() {
         }
 
         if (accessibilityServiceInfo != null) {
-            accessibilityServiceInfo.eventTypes = (AccessibilityEvent.TYPE_VIEW_SELECTED
+            /*accessibilityServiceInfo.eventTypes = (AccessibilityEvent.TYPE_VIEW_SELECTED
                     or AccessibilityEvent.TYPE_VIEW_FOCUSED
                     or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
                     or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                     or AccessibilityEvent.TYPE_WINDOWS_CHANGED
-                    or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
+                    or AccessibilityEvent.TYPE_VIEW_CLICKED
+                    or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)*/
 
             /*accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;*/
 
@@ -188,9 +189,11 @@ class AnaylyzingService : AccessibilityService() {
                 onTypeViewFocused(accessibilityEvent)
             }
 
+            AccessibilityEvent.TYPE_VIEW_CLICKED -> {
+                Log.v(TAG, accessibilityEvent.className.toString())
+            }
 
-
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED  -> {
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED, AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
                 Log.v(TAG, "OKNO ZMIENIONE")
                 // Log.v(TAG, accessibilityEvent.source.viewIdResourceName.toString())
                 Log.v(TAG, rootInActiveWindow?.childCount?.toString() ?: "")
@@ -217,6 +220,7 @@ class AnaylyzingService : AccessibilityService() {
                     typeViewTextSelectionChangedNodeInfo
                 )
             }
+            else -> Log.v("OI", "OTHER EVENT")
         }
     }
 
