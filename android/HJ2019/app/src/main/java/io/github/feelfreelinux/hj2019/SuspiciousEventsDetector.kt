@@ -24,6 +24,29 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
         "live"
     ), "Don't show reveal personal information to strangers!"),
     Scenario(listOf(
+        "how old are you",
+        "how many years do you have",
+        "when have you borned"
+    ), "Don't give your age to strangers!"),
+    Scenario(listOf(
+        "Send",
+        "nudes"
+    ), "This doesn’t seems good, maybe leave this chat"),
+    Scenario(listOf(
+        "Are",
+        "your",
+        "parents",
+        "home"
+    ), "This is not a question that you are supposed to respond to"),
+    Scenario(listOf(
+        "Download this for free",
+        "candies",
+        "diamonds"
+    ), "Remember! Do not download anything from weird sites!"),
+    Scenario(listOf(
+        "Confirm that you are a human via sms"
+    ), "This is a scam, if you’ll give your phone number, you can lost your money!"),
+    Scenario(listOf(
         "Union",
         "transfer"
     ), "Don't transfer money to strangers! If you want to buy something online - ask your parent")
@@ -53,7 +76,7 @@ class SuspiciousEventsDetector {
         }
 
         fun textViewFound(id: String, data: String, context: Context) {
-            if (id == "com.instagram.android:id/direct_text_message_text_view") {
+            if (id == "com.instagram.android:id/direct_text_message_text_view" || id ==  "com.zhiliaoapp.musically:id/eyx") {
                 data.split(" ").forEach mainForEach@{
                         splittedWord ->
                     SCENARIOS_OUTPUT_ANALYZED.forEach {
