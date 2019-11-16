@@ -41,6 +41,8 @@ class AnaylyzingService : AccessibilityService() {
     private var mTypeViewTextSelectionChangedEventObject: TypeViewTextSelectionChangedEventObject? =
         null
 
+    var currentlyOpenedApp: String = ""
+
     private fun onTypeViewSelected(accessibilityEvent: AccessibilityEvent) {
         val packageName = accessibilityEvent.packageName
 
@@ -82,7 +84,7 @@ class AnaylyzingService : AccessibilityService() {
         if (packageName != null && packageName != getPackageName()) {
             Log.v(TAG, "GOT DATA, EVENT OBJECT")
             Log.v(TAG, accessibilityEvent.text.first().toString())
-            SuspiciousEventsDetector.eventTyped(accessibilityEvent.text.first().toString(), applicationContext)
+            SuspiciousEventsDetector.eventTyped(accessibilityEvent.text.first().toString(), applicationContext, accessibilityEvent.packageName.toString())
 
 
         }
@@ -139,13 +141,13 @@ class AnaylyzingService : AccessibilityService() {
         }
 
         if (accessibilityServiceInfo != null) {
-            /*accessibilityServiceInfo.eventTypes = (AccessibilityEvent.TYPE_VIEW_SELECTED
+            accessibilityServiceInfo.eventTypes = (AccessibilityEvent.TYPE_VIEW_SELECTED
                     or AccessibilityEvent.TYPE_VIEW_FOCUSED
                     or AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED
                     or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
                     or AccessibilityEvent.TYPE_WINDOWS_CHANGED
                     or AccessibilityEvent.TYPE_VIEW_CLICKED
-                    or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)*/
+                    or AccessibilityEvent.TYPE_VIEW_TEXT_SELECTION_CHANGED)
 
             /*accessibilityServiceInfo.flags = AccessibilityServiceInfo.DEFAULT;*/
 
@@ -193,7 +195,10 @@ class AnaylyzingService : AccessibilityService() {
                 Log.v(TAG, accessibilityEvent.className.toString())
             }
 
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED, AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED, AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED/*, AccessibilityEvent.TYPE_WINDOWS_CHANGED */-> {
+
+                currentlyOpenedApp = accessibilityEvent.packageName.toString()
+
                 Log.v(TAG, "OKNO ZMIENIONE")
                 // Log.v(TAG, accessibilityEvent.source.viewIdResourceName.toString())
                 Log.v(TAG, rootInActiveWindow?.childCount?.toString() ?: "")
@@ -245,7 +250,7 @@ class AnaylyzingService : AccessibilityService() {
         if (rootInActiveWindow2?.className?.contains("TextView") ?: false || rootInActiveWindow2?.className?.contains("EditText") ?: false || rootInActiveWindow2?.className?.contains("Button") ?: false) {
             if (lastEvent != rootInActiveWindow2?.text.toString()) {
                 lastEvent = rootInActiveWindow2?.text.toString()
-                SuspiciousEventsDetector.textViewFound(rootInActiveWindow2?.viewIdResourceName ?: "", rootInActiveWindow2?.text.toString() ?: "", applicationContext)
+                SuspiciousEventsDetector.textViewFound(rootInActiveWindow2?.viewIdResourceName ?: "", rootInActiveWindow2?.text.toString() ?: "", applicationContext, rootInActiveWindow2?.packageName.toString() ?: "")
 
             }
             Log.v("OI", "Found textview ! " + " id lol" + rootInActiveWindow2?.viewIdResourceName ?: "" )
