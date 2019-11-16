@@ -86,7 +86,8 @@ class FloatingBalloon : Service(), FloatingViewListener {
             listOf("\uD83C\uDFAC Use Youtube to watch videos. It is not safe here \uD83D\uDE44."),
             false,
             buttonData = ButtonData("Open YouTube") {
-                val launchIntent = it.packageManager.getLaunchIntentForPackage("com.google.android.youtube")
+                val launchIntent =
+                    it.packageManager.getLaunchIntentForPackage("com.google.android.youtube")
                 it.startActivity(launchIntent)
                 stopSelf()
             }
@@ -96,7 +97,8 @@ class FloatingBalloon : Service(), FloatingViewListener {
             listOf("Use Google Play to download apps. It is not safe here \uD83D\uDE44."),
             false,
             buttonData = ButtonData("Open Google Play") {
-                val launchIntent = it.packageManager.getLaunchIntentForPackage("com.android.vending")
+                val launchIntent =
+                    it.packageManager.getLaunchIntentForPackage("com.android.vending")
                 it.startActivity(launchIntent)
                 stopSelf()
             }
@@ -105,9 +107,38 @@ class FloatingBalloon : Service(), FloatingViewListener {
             "possibleThief",
             listOf(
                 "\uD83D\uDE31 This person may be a thief. Talk to your parents \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66!",
-                "\uD83C\uDD98 This person can be a fraud. Contact your parents, please \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66! "
+                "\uD83C\uDD98 This person can be a fraud. Contact your parents, please \uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC66\u200D\uD83D\uDC66!"
             ),
             true,
+            buttonData = ButtonData("Call mom") {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.data = (Uri.parse("tel:" + "123456789"))
+
+                it.startActivity(intent)
+                stopSelf()
+            }),
+        ScenarioData(
+            "infoLocation",
+            listOf(
+                "\uD83D\uDCCD Be careful. Don't let strangers know where you or your parents are \uD83E\uDD2B",
+                "⛔ Don't share your location on the Internet. It's unsafe! \uD83D\uDE14",
+                "\uD83D\uDEAB Sharing location on the Internet is not safe! \uD83E\uDD2B"
+            ), true
+        ),
+        ScenarioData(
+            "infoAge",
+            listOf(
+                "❗ Be careful. Don't let strangers know your age or any other info about you \uD83E\uDD2D",
+                "⛔ Don't share your age on the Internet. It's unsafe! \uD83D\uDE14"
+            ), false
+        ),
+        ScenarioData(
+            "bully",
+            listOf(
+                "\uD83D\uDC7F This person is aggressive. Do you know them? Consider blocking them ⛔",
+                "\uD83D\uDCA9 Don't argue with the bully. Block this contact and call your parents \uD83D\uDCDE"
+            ), true,
             buttonData = ButtonData("Call mom") {
                 val intent = Intent(Intent.ACTION_DIAL)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -168,7 +199,8 @@ class FloatingBalloon : Service(), FloatingViewListener {
             scenariosMap[scenario.scenarioId] = 0
         }
         iconView.bubble_text.text =
-            scenario.hint[if (scenariosMap[scenario.scenarioId]!! % 2 == 0) 0 else 1]
+            scenario.hint[scenariosMap[scenario.scenarioId]!! % scenario.hint.size]
+        scenariosMap[scenario.scenarioId] = scenariosMap[scenario.scenarioId]!! + 1
 
 
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)

@@ -12,41 +12,87 @@ data class Scenario(
 
 val SCENARIOS = listOf(
     Scenario(listOf(), "http"),
-    Scenario(listOf(
-        listOf("free", "download")
-    ), "fileDownload", "com.android.chrome"),
-    Scenario(listOf(
-        listOf("free", "mp3"),
-        listOf("download", "mp3")
-    ), "mp3Download", "com.android.chrome"),
-    Scenario(listOf(
-        listOf("watch", "video"),
-        listOf("download", "movie"),
-        listOf("download", "video")
-    ), "videoDownload", "com.android.chrome"),
-    Scenario(listOf(
-        listOf("download", "apk"),
-        listOf("free", "apk"),
-        listOf("download", "app")
-    ), "appDownload", "com.android.chrome")
+    Scenario(
+        listOf(
+            listOf("free", "download")
+        ), "fileDownload", "com.android.chrome"
+    ),
+    Scenario(
+        listOf(
+            listOf("free", "mp3"),
+            listOf("download", "mp3"),
+            listOf("download", "audio"),
+            listOf("free", "songs")
+        ), "mp3Download", "com.android.chrome"
+    ),
+    Scenario(
+        listOf(
+            listOf("watch", "video"),
+            listOf("download", "movie"),
+            listOf("download", "video"),
+            listOf("free", "video")
+        ), "videoDownload", "com.android.chrome"
+    ),
+    Scenario(
+        listOf(
+            listOf("download", "apk"),
+            listOf("free", "apk"),
+            listOf("download", "app"),
+            listOf("free", "coins"),
+            listOf("free", "vip")
+        ), "appDownload", "com.android.chrome"
+    )
 )
 
 val SCENARIOS_OUTPUT_ANALYZED = listOf(
-    Scenario(listOf(
-        listOf("bank", "transfer"),
-        listOf("send", "money"),
-        listOf("sign", "contract"),
-        listOf("transfer", "cash"),
-        listOf("transfer", "money"),
-        listOf("transfer", "deposit"),
-        listOf("send", "credit", "card"),
-        listOf("credit", "card", "numbers"),
-        listOf("transferwise"),
-        listOf("paypal"),
-        listOf("western", "transfer"),
-        listOf("western", "union"),
-        listOf("westernunion")
-        ), "possibleThief")
+    Scenario(
+        listOf(
+            listOf("bank", "transfer"),
+            listOf("send", "money"),
+            listOf("sign", "contract"),
+            listOf("transfer", "cash"),
+            listOf("transfer", "money"),
+            listOf("transfer", "deposit"),
+            listOf("send", "credit", "card"),
+            listOf("credit", "card", "numbers"),
+            listOf("transferwise"),
+            listOf("paypal"),
+            listOf("western", "transfer"),
+            listOf("western", "union"),
+            listOf("westernunion")
+        ), "possibleThief"
+    ),
+    Scenario(
+        listOf(
+            listOf("where", "live"),
+            listOf("where", "study"),
+            listOf("where", "school"),
+            listOf("where", "work"),
+            listOf("home", "address"),
+            listOf("share", "location"),
+            listOf("send", "location")
+        ), "infoLocation"
+    ),
+    Scenario(
+        listOf(
+            listOf("how", "old"),
+            listOf("your", "age")
+        ), "infoAge"
+    ),
+    Scenario(
+        listOf(
+            listOf("you", "moron"),
+            listOf("you", "stupid"),
+            listOf("hate", "you"),
+            listOf("kill", "you"),
+            listOf("you", "dumb"),
+            listOf("you", "retard"),
+            listOf("kill", "yourself"),
+            listOf("shut", "up")
+        ), "bully"
+    )
+
+
 )
 
 
