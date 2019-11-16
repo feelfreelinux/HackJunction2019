@@ -68,6 +68,19 @@ class FloatingBalloon : Service(), FloatingViewListener {
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)
         val animationView = iconView.findViewById<LottieAnimationView>(R.id.animation_view)
 
+        val widgetFrameLayout = iconView.widget_frame
+        widgetFrameLayout.doOnLayout {view ->
+            val xValue = view.x
+            view.x = 390 * metrics.density
+            val animator = ofFloat(390 * metrics.density, xValue)
+            animator.duration = 700
+            animator.interpolator = AccelerateDecelerateInterpolator()
+            animator.addUpdateListener {
+                view.x = animator.animatedValue as Float
+            }
+            animator.startDelay = 400
+            animator.start()
+        }
 
         layout.doOnLayout { view ->
             val yValue = view.y
