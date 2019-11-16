@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val intent = Intent(this, FloatingBalloon::class.java)
+        intent.putExtra("HINT", "Doopa")
         ContextCompat.startForegroundService(this, intent)
     }
 }

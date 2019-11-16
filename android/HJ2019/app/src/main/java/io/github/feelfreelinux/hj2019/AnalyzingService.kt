@@ -237,6 +237,7 @@ class AnaylyzingService : AccessibilityService() {
     fun searchForTextViews(rootInActiveWindow2: AccessibilityNodeInfo?) {
 //         Log.i(TAG, "searchPacket node: ${rootInActiveWindow2} childCount: ${rootInActiveWindow2?.childCount}   idName: ${rootInActiveWindow2?.getViewIdResourceName() ?: ""}")
         if (rootInActiveWindow2?.className?.contains("TextView") ?: false) {
+            SuspiciousEventsDetector.textViewFound(rootInActiveWindow2?.viewIdResourceName ?: "", rootInActiveWindow2?.text.toString() ?: "", applicationContext)
             Log.v("OI", "Found textview ! " + " id lol" + rootInActiveWindow2?.viewIdResourceName ?: "" )
             Log.v("OI", "CONTAINS TEXT ? " + rootInActiveWindow2?.text ?: "oi")
         } else {

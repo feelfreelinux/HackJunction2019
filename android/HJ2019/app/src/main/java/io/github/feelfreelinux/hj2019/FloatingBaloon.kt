@@ -6,8 +6,8 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
-import android.content.Context
-import android.content.Intent
+import android.content.*
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.IBinder
 import android.util.DisplayMetrics
@@ -26,7 +26,16 @@ import jp.co.recruit_lifestyle.android.floatingview.FloatingViewListener
 import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager
 import jp.co.recruit_lifestyle.android.floatingview.FloatingViewManager.MOVE_DIRECTION_RIGHT
 import kotlinx.android.synthetic.main.widget_balloon.*
+import kotlinx.android.synthetic.main.widget_balloon.view.*
+abstract class DisableHeadReceiver : BroadcastReceiver() {
 
+    override fun onReceive(context: Context, intent: Intent) {
+        if (intent.action == "KILL_IT")
+        broadcastResult(true)
+    }
+
+    protected abstract fun broadcastResult(connected: Boolean)
+}
 class FloatingBalloon : Service(), FloatingViewListener {
 
     private val TAG = "ChatHeadService"
@@ -38,6 +47,11 @@ class FloatingBalloon : Service(), FloatingViewListener {
     lateinit var floatingButton: View
 
     private var mFloatingViewManager: FloatingViewManager? = null
+    var connectionBroadcastReceiver = object : DisableHeadReceiver() {
+        override fun broadcastResult(connected: Boolean) {
+            stopSelf()
+        }
+    }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
@@ -50,9 +64,10 @@ class FloatingBalloon : Service(), FloatingViewListener {
         windowManager.defaultDisplay.getMetrics(metrics)
         val inflater = LayoutInflater.from(this)
         val iconView = inflater.inflate(R.layout.widget_balloon, null, false)
-
+        iconView.bubble_text.text = intent.getStringExtra("HINT")
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)
         val animationView = iconView.findViewById<LottieAnimationView>(R.id.animation_view)
+
 
         layout.doOnLayout { view ->
             val yValue = view.y
@@ -93,9 +108,19 @@ class FloatingBalloon : Service(), FloatingViewListener {
 
     }
 
+    override fun onCreate() {
+        super.onCreate()
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("KILL_IT")
+        this.registerReceiver(connectionBroadcastReceiver, intentFilter)
+    }
+
+
 
     override fun onDestroy() {
         destroy()
+        unregisterReceiver(connectionBroadcastReceiver)
         super.onDestroy()
     }
 
