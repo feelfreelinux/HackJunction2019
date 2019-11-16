@@ -73,6 +73,12 @@ class FloatingBalloon : Service(), FloatingViewListener {
         val inflater = LayoutInflater.from(this)
         val iconView = inflater.inflate(R.layout.widget_balloon, null, false)
         iconView.bubble_text.text = intent.getStringExtra("HINT").trim()
+        if (intent.getBooleanExtra("ANGRY_MODE", false)) {
+            iconView.animation_view.setAnimation(R.raw.balloon2v1)
+        } else {
+            iconView.animation_view.setAnimation(R.raw.balloon1v1)
+        }
+
         val layout = iconView.findViewById<FrameLayout>(R.id.bubble_layout)
         val animationView = iconView.findViewById<LottieAnimationView>(R.id.animation_view)
 

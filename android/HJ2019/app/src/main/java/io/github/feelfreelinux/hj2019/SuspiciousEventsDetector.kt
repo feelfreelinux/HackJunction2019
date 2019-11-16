@@ -5,7 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.core.content.ContextCompat
 
-data class Scenario(val keywordsList: List<List<String>>, val hint: String)
+data class Scenario(val keywordsList: List<List<String>>, val hint: String, val angry: Boolean)
 
 
 val SCENARIOS = listOf(
@@ -16,14 +16,14 @@ val SCENARIOS = listOf(
             listOf("home"),
             listOf("My", "street"),
             listOf("live", "I")
-        ), "Never share your personal information on the Internet \uD83D\uDE31 \uD83D\uDE31 \uD83D\uDE31"),
+        ), "Never share your personal information on the Internet \uD83D\uDE31 \uD83D\uDE31 \uD83D\uDE31", true),
     Scenario(
         listOf(
             listOf("Union", "Western", "transfer"),
             listOf("transfer", "money"),
             listOf("transfer", "cash"),
             listOf("paypal", "money")
-        ), "\uD83D\uDED1 Stop! Ask your parents if this payment is safe!"
+        ), "\uD83D\uDED1 Stop! Ask your parents if this payment is safe!", true
     )
 )
 
@@ -36,13 +36,13 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
             listOf("Your", "street"),
             listOf("live", "You"),
             listOf("Your", "age")
-        ), "It's not safe to share your personal information on the Internet \uD83D\uDE15"),
+        ), "It's not safe to share your personal information on the Internet \uD83D\uDE15", true),
 
     Scenario(
         listOf(
             listOf("You", "moron"),
             listOf("hate", "you")
-        ), "This person seems to be aggressive \uD83D\uDC7A, it's a good idea to block them and talk with your parents."
+        ), "This person seems to be aggressive \uD83D\uDC7A, it's a good idea to block them and talk with your parents.", false
     ),
 
     Scenario(
@@ -51,19 +51,19 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
             listOf("login", "account"),
             listOf("login", "password"),
             listOf("password", "account")
-        ), "This person may be a fraud \uD83E\uDD14. Discuss it with your parents!"
+        ), "This person may be a fraud \uD83E\uDD14. Discuss it with your parents!", false
     ),
     Scenario(
         listOf(
             listOf("sms", "confirm")
-        ), "This may be a scam \uD83D\uDE21! If you give your phone number, you can lose your money."
+        ), "This may be a scam \uD83D\uDE21! If you give your phone number, you can lose your money.", true
     ),
     Scenario(
         listOf(
             listOf("Union", "Western", "transfer"),
             listOf("transfer", "money"),
                     listOf("transfer", "cash")
-    ), "STOP \uD83D\uDED1! Ask your parents if this payment is safe!"
+    ), "STOP \uD83D\uDED1! Ask your parents if this payment is safe!", true
     )
 )
 
@@ -75,50 +75,27 @@ class SuspiciousEventsDetector {
             SCENARIOS.forEach { scenario ->
                 if (checkKeywords(scenario, data)) {
 
-                    val intent = Intent(context, FloatingBalloon::class.java)
-
-                    intent.putExtra("HINT", scenario.hint)
-                    ContextCompat.startForegroundService(context, intent)
-                    return
+                    showHint(scenario.hint, scenario.angry, context)
                 }
             }
         }
 
         fun textViewFound(id: String, data: String, context: Context) {
             if (id == "com.android.vending:id/right_button" && data == "Install") {
-                var hint = "Ask your parent if this app is proper for you."
-                if (lastScenario != hint) {
-                    lastScenario = hint
-                    val intent = Intent(context, FloatingBalloon::class.java)
-
-                    intent.putExtra("HINT", hint)
-                    ContextCompat.startForegroundService(context, intent)
-                    return
-                }
-                return
+                showHint("Ask your parent if this app is proper for you.", false, context)
             }
 
             if (id == "com.android.chrome:id/url_bar") {
                 if (data.startsWith("http:")) {
-                    var hint = "This site is not secure. Please, avoid it"
-                    if (lastScenario != hint) {
-                        lastScenario = hint
-                        val intent = Intent(context, FloatingBalloon::class.java)
+                    showHint("This site is not secure. Please, avoid it", true, context)
 
-                        intent.putExtra("HINT", hint)
-                        ContextCompat.startForegroundService(context, intent)
-                        return
-                    }
                 }
             }
 
             if (id == "com.instagram.android:id/direct_text_message_text_view" || id == "com.zhiliaoapp.musically:id/eyx") {
                 SCENARIOS_OUTPUT_ANALYZED.forEach { scenario ->
                     if (checkKeywords(scenario, data)) {
-                        val intent = Intent(context, FloatingBalloon::class.java)
-
-                        intent.putExtra("HINT", scenario.hint)
-                        ContextCompat.startForegroundService(context, intent)
+                        showHint(scenario.hint, scenario.angry, context)
                         return
                     }
                 }
@@ -131,11 +108,7 @@ class SuspiciousEventsDetector {
             scenario.keywordsList.forEach { keywords ->
                 // keywords = I, live
                 if (splittedWords.containsAll(keywords.map { it.toLowerCase() })) {
-                        Log.v("TAG", "Last scenario: " + lastScenario ?: "")
-                        if (!(lastScenario?.contains( scenario.hint) ?: false)){
-                            lastScenario = scenario.hint
-                            return true
-                        }
+                        return true
                     }
 
 
@@ -161,6 +134,18 @@ class SuspiciousEventsDetector {
                 }
             }
             return false
+        }
+
+        fun showHint(hint: String, angry: Boolean, context: Context) {
+            if (lastScenario != hint) {
+                lastScenario = hint
+                val intent = Intent(context, FloatingBalloon::class.java)
+
+                intent.putExtra("HINT", hint)
+                intent.putExtra("ANGRY_MODE", angry)
+                ContextCompat.startForegroundService(context, intent)
+                return
+            }
         }
     }
 }
