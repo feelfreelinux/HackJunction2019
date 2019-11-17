@@ -60,6 +60,7 @@ class FloatingBalloon : Service(), FloatingViewListener {
             listOf("\uD83D\uDE1F It's not safe to download files from the Internet."),
             false
         ),
+        ScenarioData("googlePlay", listOf("This app might share your location \uD83D\uDE31 Discuss it with your parent!"), false),
         ScenarioData(
             "http",
             listOf(
@@ -68,6 +69,7 @@ class FloatingBalloon : Service(), FloatingViewListener {
             ),
             false
         ),
+        ScenarioData("infoPictures", listOf("Don't send your pictures to strangers on internet! \n\uD83D\uDE44\uD83D\uDE44\uD83D\uDE44"), true),
         ScenarioData(
             "mp3Download",
             listOf(

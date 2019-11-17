@@ -14,6 +14,15 @@ val SCENARIOS = listOf(
     Scenario(listOf(), "http"),
     Scenario(
         listOf(
+            listOf("I", "live"),
+            listOf("my", "house"),
+            listOf("my", "school"),
+            listOf("My", "work"),
+            listOf("home", "address")
+        ), "infoLocation"
+    ),
+    Scenario(
+        listOf(
             listOf("free", "download")
         ), "fileDownload", "com.android.chrome"
     ),
@@ -72,6 +81,13 @@ val SCENARIOS_OUTPUT_ANALYZED = listOf(
             listOf("share", "location"),
             listOf("send", "location")
         ), "infoLocation"
+    ),
+    Scenario(
+        listOf(
+            listOf("send", "photo"),
+            listOf("send", "picture"),
+            listOf("show", "yourself")
+        ), "infoPictures"
     ),
     Scenario(
         listOf(
